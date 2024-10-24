@@ -18,18 +18,21 @@ export const SummarizedText: FC<SummarizedTextProps> = ({
 
   const motionProps = useMemo(
     () =>
-      !isSmallDevice
+      (!isSmallDevice
         ? {
+            key: "summarized-text-big",
             initial: { opacity: 0, width: 0 },
             animate: { opacity: 1, width: 450 },
             exit: { opacity: 0, width: 0 }
           }
-        : {},
+        : { key: "summarized-text-small" }) satisfies MotionProps & {
+        key: string
+      },
     [isSmallDevice]
   )
 
   return (
-    <motion.div key="summarized-text" {...motionProps}>
+    <motion.div {...motionProps}>
       <h3 className="mb-4 text-sm text-foreground/50">
         Суммаризированный текст:
       </h3>
