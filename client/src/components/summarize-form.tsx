@@ -17,15 +17,20 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { SummarizeFormSchema, summarizeFormSchema } from "@/lib/schemas"
+import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { type FC } from "react"
 import { useForm } from "react-hook-form"
 
 type SummarizeFormProps = {
   onSubmit: (data: SummarizeFormSchema) => void
+  className?: string
 }
 
-export const SummarizeForm: FC<SummarizeFormProps> = ({ onSubmit }) => {
+export const SummarizeForm: FC<SummarizeFormProps> = ({
+  className,
+  onSubmit
+}) => {
   const form = useForm<SummarizeFormSchema>({
     resolver: zodResolver(summarizeFormSchema)
   })
@@ -33,8 +38,11 @@ export const SummarizeForm: FC<SummarizeFormProps> = ({ onSubmit }) => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col gap-6"
-        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn("flex flex-col gap-6", className)}
+        onSubmit={form.handleSubmit((data) => {
+          onSubmit(data)
+          form.reset()
+        })}
       >
         <FormField
           name="level"
@@ -55,8 +63,7 @@ export const SummarizeForm: FC<SummarizeFormProps> = ({ onSubmit }) => {
                 </SelectContent>
               </Select>
               <FormDescription>
-                Выберите насколько сильно нужно сжать/суммаризировать введенный
-                текст
+                Выберите насколько сильно нужно сжать введенный текст
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -76,7 +83,7 @@ export const SummarizeForm: FC<SummarizeFormProps> = ({ onSubmit }) => {
                 />
               </FormControl>
               <FormDescription>
-                Введите найденный вами большой текст, дабы суммаризировать его
+                Введите найденный вами большой текст
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -1,9 +1,11 @@
 class SummarizeService {
   private BASE_URL = "/summarize"
 
-  summarize(text: string, level: string) {
+  async summarize(text: string, level: string) {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
     return Promise.resolve({
-      text: "aasdpkasdgfp"
+      text: `Это текст суммаризированный на уровне ${level}`
     })
   }
 }
