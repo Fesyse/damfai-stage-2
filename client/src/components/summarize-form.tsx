@@ -41,7 +41,9 @@ export const SummarizeForm: FC<SummarizeFormProps> = ({
         className={cn("flex flex-col gap-6", className)}
         onSubmit={form.handleSubmit((data) => {
           onSubmit(data)
-          form.reset()
+          form.reset({
+            text: ""
+          })
         })}
       >
         <FormField
@@ -50,7 +52,7 @@ export const SummarizeForm: FC<SummarizeFormProps> = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Уровень сжатия</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value ?? ""}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Выберите уровень сжатия" />
