@@ -1,12 +1,13 @@
 import { SummarizeForm } from "@/components/summarize-form"
 import { useSummarize } from "@/hooks/use-summarize"
 import { SummarizeFormSchema } from "@/lib/schemas"
-import { randomNumber } from "@/lib/utils"
+import { cn, randomNumber } from "@/lib/utils"
 import { CopyIcon } from "@radix-ui/react-icons"
 import { AnimatePresence, motion } from "framer-motion"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "./components/ui/button"
+import { useMediaQuery } from "./hooks/use-media-query"
 
 export function App() {
   const { data, isPending, mutate: summarize } = useSummarize()
@@ -18,7 +19,7 @@ export function App() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center px-2">
       <main className="flex flex-col gap-5">
         <div className="text-center">
           <h1 className="mb-2 bg-gradient-to-b from-foreground/25 to-foreground bg-clip-text text-center text-5xl font-bold text-transparent dark:from-neutral-200 dark:to-neutral-600 md:text-7xl">
@@ -28,27 +29,19 @@ export function App() {
             Решение для 2 этапа проекта Сириус.ИИ от команды Damfai
           </p>
         </div>
-        <motion.div className="flex gap-8 rounded-xl border border-border p-10">
+        <motion.div className="flex flex-col gap-8 rounded-xl border border-border p-6 md:p-10 min-[970px]:flex-row">
           <SummarizeForm onSubmit={onSubmit} />
           <AnimatePresence>
-            {/* Separator */}
-            {isSubmitted ? (
-              <motion.div
-                key="separator"
-                initial={{ height: 0 }}
-                animate={{ height: 100, transition: { delay: 0.5 } }}
-                exit={{ height: 0 }}
-                className="w-px self-center rounded bg-muted"
-              ></motion.div>
-            ) : null}
+            {isSubmitted ? <Separator /> : null}
 
             {/* Summarized text */}
             {isSubmitted ? (
               <motion.div
                 key="summarized-text"
                 initial={{ width: 0 }}
-                animate={{ width: 400 }}
+                animate={{ width: "100%" }}
                 exit={{ width: 0 }}
+                className="max-w-[400px]"
               >
                 {isPending || !data ? (
                   <SummarizeLoadingState />
@@ -60,7 +53,7 @@ export function App() {
                     exit={{ opacity: 0 }}
                     className="flex h-full flex-col justify-between"
                   >
-                    <div>
+                    <div className="mb-4">
                       <h3 className="mb-2 text-sm text-foreground/50">
                         Суммаризированный текст:
                       </h3>
@@ -86,6 +79,25 @@ export function App() {
         </motion.div>
       </main>
     </div>
+  )
+}
+
+function Separator() {
+  const isSmallDevice = useMediaQuery("(max-width: 970px)")
+  return (
+    <motion.div
+      key="separator"
+      initial={{ [!isSmallDevice ? "height" : "width"]: 0 }}
+      animate={{
+        [!isSmallDevice ? "height" : "width"]: 100,
+        transition: { delay: 0.5 }
+      }}
+      exit={{ [!isSmallDevice ? "height" : "width"]: 0 }}
+      className={cn("self-center rounded bg-muted", {
+        "w-px": !isSmallDevice,
+        "h-px": isSmallDevice
+      })}
+    ></motion.div>
   )
 }
 
